@@ -3,16 +3,6 @@ tempsurvive={
 	step_timer=0,
 	step_time=1,
 	player={},
-	perlin={
-		offset=50,
-		scale=50,
-		spread={x=1000,y=1000,z=1000},
-		seed=5349,
-		octaves=3,
-		persist=0.5,
-		lacunarity=2,
-		flags="default"
-	},
 	bar={
 		hud_elem_type="statbar",
 		position={x=0.5,y=1.025},
@@ -37,6 +27,20 @@ tempsurvive={
 		["default:furnace_active"]={add=10,rad=10},
 	}
 }
+
+minetest.register_on_mapgen_init(function()
+	mg_name = minetest.get_mapgen_setting("mg_name")	
+	local setting
+	if mg_name == "v6" then --Choose the appropriate mapgen setting based on mapgen
+		setting = "mgv6_np_biome"
+	else
+		setting = "mg_biome_np_heat"
+	end
+	local perlin = minetest.get_mapgen_setting_noiseparams(setting)
+	perlin.offset = 10 --Normalize the noise to 10 ± 50
+	perlin.scale = 50
+	tempsurvive.perlin = perlin
+end)
 
 tempsurvive.new=function(player)
 	local name=player:get_player_name()
